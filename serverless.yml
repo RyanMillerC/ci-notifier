@@ -13,7 +13,7 @@ provider:
     PRIVATE_KEY: ${env:PRIVATE_KEY}
 
 functions:
-  build-notifier:
+  ci-notifier:
     handler: handler.main
     events:
       - http:
