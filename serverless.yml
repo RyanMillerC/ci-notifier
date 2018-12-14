@@ -1,4 +1,4 @@
-service: build-notifier
+service: ci-notifier
 
 plugins:
   - serverless-offline
