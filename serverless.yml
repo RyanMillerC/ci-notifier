@@ -1,0 +1,21 @@
+service: build-notifier
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: production
+  environment:
+    APP_ID: ${env:APP_ID}
+    WEBHOOK_SECRET: ${env:WEBHOOK_SECRET}
+    PRIVATE_KEY: ${env:PRIVATE_KEY}
+
+functions:
+  build-notifier:
+    handler: handler.main
+    events:
+      - http:
+          path: /
+          method: post
