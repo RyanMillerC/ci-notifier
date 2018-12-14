@@ -1,0 +1,16 @@
+# This file contains the message ci-notifier will use for failing commits. You
+# can customize this message with any Markdown that is supported in GitHub
+# comments, including emojis. Additionally, several templated names can be used.
+# These will be replaced with their corresponding values when the app is run.
+# Available template values are:
+#
+#       {{branchName}} = Name of the associated branch
+#        {{commitSha}} = Failing commit's SHA
+#   {{commitShaShort}} = Shortened 7-digit failing commit's SHA
+#   {{htmlCommitLink}} = Link to view the commit on GitHub
+#    {{pullRequestId}} = ID of the associated pull request
+#         {{repoName}} = Name of this repo
+#        {{repoOwner}} = Username of this repo's owner
+#
+
+commentText: ":x: Commit [{{commitShaShort}}]({{htmlCommitLink}}) failed CI. Additional info is available [here](https://example.com/{{branchName}})."

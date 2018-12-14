@@ -4,6 +4,20 @@ module.exports = app => {
   app.on('status', async context => {
     app.log('Received status webhook:', context.payload.state)
     if (context.payload.state === 'failure') {
+      let config
+      try {
+        config = await context.config('ci-notifier.yml')
+      } catch (e) {
+        console.error('Unable to open ".github/ci-notifier.yml".')
+        process.exit(1)
+      }
+
+      let { commentText } = config
+      if (!commentText) {
+        console.error('Unable to pull required settings from ".github/ci-notifier.yml".')
+        process.exit(1)
+      }
+
       const commitSha = context.payload.commit.sha
       const repoInfo = {
         owner: context.payload.repository.owner.login,
@@ -27,8 +41,19 @@ module.exports = app => {
         const pullRequestId = shaMatchedPr.number
         const branchName = shaMatchedPr.head.ref
         const commitShaShort = commitSha.substring(0, 7)
-        const htmlPrCommitLink = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/pull/${pullRequestId}/commits/${commitSha}`
-        const commentText = `:x: Commit [${commitShaShort}](${htmlPrCommitLink}) failed CI. Additional info is available [here](https://example.com/${branchName}).`
+
+        const templateMap = {
+          branchName,
+          commitSha,
+          commitShaShort,
+          htmlCommitLink: `https://github.com/${repoInfo.owner}/${repoInfo.repo}/pull/${pullRequestId}/commits/${commitSha}`,
+          pullRequestId,
+          repoName: repoInfo.repo,
+          repoOwner: repoInfo.owner
+        }
+        Object.keys(templateMap).forEach(k => {
+          commentText = commentText.replace(`{{${k}}}`, templateMap[k])
+        })
         const commentPayload = {
           ...repoInfo,
           number: pullRequestId,
