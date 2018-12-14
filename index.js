@@ -37,11 +37,11 @@ module.exports = app => {
       const shaMatchedPr = pullRequestsWithCommits.find(p => {
         return p.commits.find(c => c.sha === commitSha)
       })
+
       if (shaMatchedPr) {
         const pullRequestId = shaMatchedPr.number
         const branchName = shaMatchedPr.head.ref
         const commitShaShort = commitSha.substring(0, 7)
-
         const templateMap = {
           branchName,
           commitSha,
@@ -67,7 +67,6 @@ module.exports = app => {
     } else {
       app.log('Nothing to do')
     }
-    // app.log(await context.github.request('GET ' + context.payload.commit.comments_url))
     app.log('done.')
     return null
   })
